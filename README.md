@@ -1,3 +1,14 @@
+## <h2 style="background-color: #6d28d9; color: #fff;display: inline-block;">Kanban methodology</h2>
+
+<p>For a detailed explanation of the implementation process, technical decisions, and overall design, please refer to the corresponding public GitHub project. This is the project for the specified repository, and it follows the Kanban methodology. The project provides insights into the thinking process, including decisions made regarding functional and non-functional requirements, data structures, and global configuration. You can find all the details here:</p>
+
+<a href="https://github.com/users/KarimMoustamid/projects/7/views/1" target="_blank">GitHub Project: POS System Change
+Calculation</a>
+
+
+<br>
+</hr>
+
 ## <h2 style="background-color: #6d28d9; color: #fff;display: inline-block;">POS System Change Calculation Routine</h2>
 
 <p>You are a <span style="background-color: #fcd34d; color: black;display: inline-block;font-weight: 400;font-style: italic;"> software consultant </span> for CASH Masters, a company that sells point-of-sale (POS) electronic cash registers.  CASH Masters would like to rewrite their POS system from scratch and has the requirement below that they’d like you to implement. Provide a complete working solution of how you would implement this. Pay attention to all function and non-function requirements and treat this as if you were coding as a member of the CASH Master team.</p>
@@ -45,16 +56,3 @@ Since other engineers will use your function, you should:
 - Follow **common Object-Oriented principles.**
 - Optimize for **performance.**
 - Include **robust error handling** with clearly documented exceptions.
-
-
-
-<br>
-<br>
-<br>
-</hr>
-
-
-<p>For a detailed explanation of the implementation process, technical decisions, and overall design, please refer to the corresponding public GitHub project. The project provides insights into the thinking process, including decisions made regarding functional and non-functional requirements, data structures, and global configuration. You can find all the details here:</p>
-
-<a href="https://github.com/users/KarimMoustamid/projects/7/views/1" target="_blank">GitHub Project: POS System Change
-Calculation</a>

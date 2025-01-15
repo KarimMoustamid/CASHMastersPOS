@@ -69,6 +69,7 @@ namespace POSApplication.Data
 
                 // Testing Load us denominations
                 var usCurrency = config.Currencies.FirstOrDefault(c => c.CurrencyCode == CurrencyConstants.USD);
+
                 if (usCurrency == null || usCurrency.Denominations == null || usCurrency?.Denominations?.Count == 0)
                 {
                     throw new InvalidDataException($"US denominations not found in file {filename}.");

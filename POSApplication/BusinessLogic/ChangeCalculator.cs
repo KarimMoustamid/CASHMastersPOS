@@ -10,6 +10,13 @@ namespace POSApplication.BusinessLogic
                 throw new ArgumentException("The paid amount must be greater than or equal to price.");
             }
 
+            // Handle the case where the paid amount is exactly equal to the price
+            if (paid == price)
+            {
+                Console.WriteLine("No change required: Paid amount is equal to the price.");
+                return new Dictionary<decimal, int>(); // Return an empty dictionary since no change is needed
+            }
+
             // Calculate the total change to return to the customer
             var changeToReturn = paid - price;
 

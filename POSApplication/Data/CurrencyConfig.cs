@@ -1,5 +1,9 @@
 namespace POSApplication.Data
 {
+    using System.Runtime.InteropServices.ComTypes;
+    using System.Text.Json;
+    using Models;
+
     public class CurrencyConfig
     {
         // Singleton instance of CurrencyConfig to ensure only one instance is created
@@ -10,17 +14,67 @@ namespace POSApplication.Data
 
         // represent currency denominations
         private List<decimal> _denominations;
+
+
+        //provides a snapshot of _currencies's current state in a read-only form.
+        // Any attempt to modify it will throw a NotSupportedException. internal state will be encapsulated and protected .
+        public IReadOnlyList<decimal> GetDenominations() => _denominations.AsReadOnly();
+
         public CurrencyConfig()
         {
             _denominations = new List<decimal>();
             //  TODO : Load the configuration
+            Console.WriteLine($"Current Directory: {Directory.GetCurrentDirectory()}");
+
+            // Load configuration from the JSON file
+            LoadFromFile("CurrencyConfig.json");
         }
 
 
         // TODO : Create a LoadFromFile Method
+        public void LoadFromFile(string filename)
+        {
+            try
+            {
+                // Building the file path relative to the application's base directory
+                // string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
+                Console.WriteLine($"Loading configuration file from : {filePath}");
 
-        //provides a snapshot of _denominations's current state in a read-only form.
-        // Any attempt to modify it will throw a NotSupportedException. internal state will be encapsulated and protected .
-        public IReadOnlyList<decimal> GetDenominations() => _denominations.AsReadOnly();
+                // Check if the file exists
+                if (!File.Exists(filePath))
+                {
+                    throw new FileNotFoundException($"The configuration file {filename} could not be found in {filePath}.");
+                }
+
+                // Read the file content
+                var json = File.ReadAllText(filePath);
+                // Deserialize the JSON content into the currency configuration model
+                var config = JsonSerializer.Deserialize<CurrencyFile>(json);
+
+                // Validate  and assign the  loaded data
+                if (config?.Currencies == null || config.Currencies.Count == 0)
+                {
+                    throw new InvalidDataException($"Invalid or empty configuration file {filename}.");
+                }
+
+                // Testing Load us denominations
+                // TODO : Fix hardcoded CurrencyCodes
+                var usCurrency = config.Currencies.FirstOrDefault(c => c.CurrencyCode == "USD");
+                if (usCurrency == null || usCurrency?.Denominations?.Count == 0)
+                {
+                    throw new InvalidDataException($"US denominations not found in file {filename}.");
+                }
+
+                Console.WriteLine($"UsCurrency: {usCurrency?.Denominations?[0]}");
+                // TODO : SET the _denominations
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while loading the configuration: {ex.Message}");
+            }
+        }
+
     }
 }

@@ -12,4 +12,9 @@
     <Folder Include="Presentation\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="CurrencyConfig.json" />
+    <Content Include="CurrencyConfig.json" />
+  </ItemGroup>
+
 </Project>

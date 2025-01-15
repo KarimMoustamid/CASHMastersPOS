@@ -2,6 +2,7 @@ namespace POSApplication.Data
 {
     using System.Runtime.InteropServices.ComTypes;
     using System.Text.Json;
+    using BusinessLogic.Utilities;
     using Models;
 
     public class CurrencyConfig
@@ -67,8 +68,7 @@ namespace POSApplication.Data
                 }
 
                 // Testing Load us denominations
-                // TODO : Fix hardcoded CurrencyCodes
-                var usCurrency = config.Currencies.FirstOrDefault(c => c.CurrencyCode == "USD");
+                var usCurrency = config.Currencies.FirstOrDefault(c => c.CurrencyCode == CurrencyConstants.USD);
                 if (usCurrency == null || usCurrency.Denominations == null || usCurrency?.Denominations?.Count == 0)
                 {
                     throw new InvalidDataException($"US denominations not found in file {filename}.");

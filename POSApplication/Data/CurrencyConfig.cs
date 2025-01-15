@@ -51,7 +51,6 @@
             _currencies = config.Currencies;
         }
 
-        // TODO : Separation of Concern
         public void SetCurrency(string currencyCode)
         {
             if (string.IsNullOrWhiteSpace(currencyCode))

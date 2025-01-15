@@ -47,11 +47,11 @@ try
 
     // Set the selected currency
     CurrencyConfig.Instance.SetCurrency(currencyCode);
-    logger.LogInformation("Currency loaded successfully!");
+    logger.LogInformation("\nCurrency loaded successfully!");
 
 
     var denominations = CurrencyConfig.Instance.GetDenominations();
-    logger.LogInformation("Available Denominations:");
+    logger.LogInformation("\nAvailable Denominations:");
     foreach (var denom in denominations)
     {
         Console.WriteLine($"- {denom:C}\n");
@@ -59,7 +59,7 @@ try
     // Collect Input for change calculation
     var price = Display.GetInput<decimal>( "Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
 
-    Console.Write("Register the payment breakdown by denomination and coins: \n");
+    Console.Write("\nRegister the payment breakdown by denomination and coins: \n");
     var paymentInDenominations = Display.CollectPaymentInput();
 
     // Calculate the total paid
@@ -73,12 +73,12 @@ try
     };
 
 
-    logger.LogInformation($"Total amount paid: {totalPaid:C}");
+    logger.LogInformation($"\nTotal amount paid: {totalPaid:C}");
 
     // Calculate change
     var calculator = new ChangeCalculator();
     var change = calculator.CalculateChange(price, payment, currencyCode);
-    logger.LogInformation("Change to return:");
+    logger.LogInformation("\nChange to return:");
 
     foreach (var item in change.Denominations)
     {

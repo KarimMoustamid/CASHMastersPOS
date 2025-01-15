@@ -57,6 +57,16 @@
                 {
                     Console.Write("Denomination: ");
                     var denom = decimal.Parse(Console.ReadLine() ?? "0");
+
+                    // Validate if the denomination exists in the available denominations
+                    var validDenominations = CurrencyConfig.Instance.GetDenominations();
+
+                    if (!validDenominations.Contains(denom))
+                    {
+                        Console.WriteLine("Invalid denomination. Please enter a valid denomination.");
+                        continue;
+                    }
+
                     Console.Write("Count: ");
                     var count = int.Parse(Console.ReadLine() ?? "0");
 

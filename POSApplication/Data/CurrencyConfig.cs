@@ -1,7 +1,5 @@
-namespace POSApplication.Data.AfterRefinmentDemo
-{
     using System.Text.Json;
-    using Models;
+    using POSApplication.Data.Models;
 
     public class CurrencyConfig
     {
@@ -14,8 +12,9 @@ namespace POSApplication.Data.AfterRefinmentDemo
         // represent currency denominations
         private List<decimal>? _denominations = new();
 
-        // REMEMBER :
         private string? _currencyCountry = string.Empty;
+
+        private CurrencyData _currentCurrency = new();
 
         public CurrencyConfig()
         {
@@ -79,7 +78,10 @@ namespace POSApplication.Data.AfterRefinmentDemo
 
             _denominations = new List<decimal>(currency.Denominations);
             _currencyCountry = currency.CurrencyCode;
+            _currentCurrency = currency;
         }
+
+        public CurrencyData? GetCurrency() => _currentCurrency;
 
         public IReadOnlyList<CurrencyData?> GetAvailableCurrencies() => _currencies?.AsReadOnly()!;
 
@@ -92,4 +94,3 @@ namespace POSApplication.Data.AfterRefinmentDemo
             return _denominations?.AsReadOnly();
         }
     }
-}

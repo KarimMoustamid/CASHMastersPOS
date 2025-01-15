@@ -2,7 +2,41 @@ namespace POSApplication.BusinessLogic
 {
     public class ChangeCalculator
     {
-        public static Dictionary<decimal, int> CalculateChange(decimal price, decimal paid, IReadOnlyList<decimal> denominations)
+        public static Dictionary<decimal, int> CalculateChange(decimal price, Dictionary<decimal, int> payment, string currencyCode)
+        {
+            var currency = CurrencyConfig.Instance.GetCurrency();
+            var denominations = currency?.Denominations;
+
+            // Calculate total payment
+            var totalPaid = payment.Sum(p => p.Key * p.Value);
+
+            if (totalPaid < price)
+                throw new ArgumentException("Insufficient payment provided.");
+
+            var changeToReturn = totalPaid - price;
+            var change = new Dictionary<decimal, int>();
+
+            foreach (var denom in denominations)
+            {
+                if (payment.ContainsKey(denom)) continue; // Skip denominations already used in payment.
+
+                var count = (int)(changeToReturn / denom);
+                if (count > 0)
+                {
+                    change[denom] = count;
+                    changeToReturn -= count * denom;
+                }
+
+                // Avoid floating-point precision issues
+                changeToReturn = Math.Round(changeToReturn, 2);
+            }
+
+            if (changeToReturn > 0)
+                throw new InvalidOperationException("Cannot provide exact change with available denominations.");
+
+            return change;
+        }
+        public static Dictionary<decimal, int> CalculateChangeLegacy(decimal price, decimal paid, IReadOnlyList<decimal> denominations)
         {
             // Check if the paid amount is less than the price
             if (paid < price)

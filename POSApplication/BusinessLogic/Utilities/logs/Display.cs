@@ -1,20 +1,37 @@
-namespace POSApplication.BusinessLogic.Utilities.logs
-{
-    using Services;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Console;
+    using POSApplication.BusinessLogic.Services;
+    using POSApplication.Data.Models;
 
     public static class Display
     {
-        public static void DisplayAvailableCurrencies(Logger logger)
+        // Static field for logger
+        private readonly static ILogger _logger;
+
+        // Static constructor to initialize the logger
+        static Display()
         {
-            var availableCurrencies = CurrencyConfig.Instance.GetAvailableCurrencies();
-            logger.LogInformation("\nAvailable Currencies:\n");
-            foreach (var currency in availableCurrencies)
+            using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             {
-                Console.WriteLine($"- {currency.Country} ({currency.CurrencyCode})");
-            }
+                builder.AddConsole(options =>
+                {
+                    options.FormatterName = "simple"; // Use the custom formatter
+                });
+
+                builder.AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>();
+            });
+
+            _logger = loggerFactory.CreateLogger("Display"); // Generic logger for a static class
         }
 
-        public static T GetInput<T>(Logger logger, string prompt, string errorMessage)
+        public static void DisplayAvailableCurrencies()
+        {
+            var availableCurrencies = CurrencyConfig.Instance.GetAvailableCurrencies();
+            _logger.LogInformation("\nAvailable Currencies:\n");
+            foreach (CurrencyData? currency in availableCurrencies) Console.WriteLine($"- {currency.Country} ({currency.CurrencyCode})");
+        }
+
+        public static T GetInput<T>(string prompt, string errorMessage)
         {
             while (true)
             {
@@ -27,16 +44,15 @@ namespace POSApplication.BusinessLogic.Utilities.logs
                 }
                 catch
                 {
-                    logger.LogWarning(errorMessage);
+                    _logger.LogWarning(errorMessage);
                 }
             }
         }
 
-        public static Dictionary<decimal, int> CollectPaymentInput(Logger logger)
+        public static Dictionary<decimal, int> CollectPaymentInput()
         {
             var paymentInDenominations = new Dictionary<decimal, int>();
             while (true)
-            {
                 try
                 {
                     Console.Write("Denomination: ");
@@ -55,11 +71,9 @@ namespace POSApplication.BusinessLogic.Utilities.logs
                 }
                 catch (Exception ex)
                 {
-                    logger.LogWarning($"Invalid input. Error: {ex.Message}");
+                    _logger.LogWarning($"Invalid input. Error: {ex.Message}");
                 }
-            }
 
             return paymentInDenominations;
         }
     }
-}

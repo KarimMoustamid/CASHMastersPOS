@@ -12,10 +12,10 @@ namespace POSApplication.Data.AfterRefinmentDemo
         public static CurrencyConfig Instance => _instance.Value; // accessing the .Value will execute the initialization logic
 
         // represent currency denominations
-        private List<decimal> _denominations = new();
+        private List<decimal>? _denominations = new();
 
         // REMEMBER :
-        private string _currencyCountry = string.Empty;
+        private string? _currencyCountry = string.Empty;
 
         public CurrencyConfig()
         {
@@ -53,9 +53,43 @@ namespace POSApplication.Data.AfterRefinmentDemo
         }
 
         // TODO : Separation of Concern
-        public IEnumerable<string> GetAvailableCountries()
+        public void SetCurrency(string currencyCode)
         {
-            return _currencies.Select(c => c.Country);
+            if (string.IsNullOrWhiteSpace(currencyCode))
+            {
+                throw new ArgumentNullException(nameof(currencyCode), "Currency code cannot be null, empty, or consist only of white-space characters.");
+            }
+
+            // Search for the currency
+            var currency = _currencies.FirstOrDefault(c => string.Equals(c.CurrencyCode, currencyCode, StringComparison.OrdinalIgnoreCase));
+
+            if (currency == null)
+            {
+                throw new KeyNotFoundException(
+                    $"The currency code '{currencyCode}' was not found. Please ensure that the code is valid and exists in the available currencies.");
+            }
+
+            if (currency.Denominations == null || currency.Denominations.Count == 0)
+            {
+                throw new InvalidOperationException($"The currency code '{currency.CurrencyCode}' does not have any valid denominations.");
+            }
+
+            // Sort denominations in descending order
+            currency.Denominations.Sort((a, b) => b.CompareTo(a));
+
+            _denominations = new List<decimal>(currency.Denominations);
+            _currencyCountry = currency.CurrencyCode;
+        }
+
+        public IReadOnlyList<CurrencyData?> GetAvailableCurrencies() => _currencies?.AsReadOnly()!;
+
+        public IReadOnlyList<decimal> GetDenominations()
+        {
+            if (string.IsNullOrWhiteSpace(_currencyCountry))
+            {
+                throw new InvalidOperationException("No currency has been selected ");
+            }
+            return _denominations?.AsReadOnly();
         }
     }
 }

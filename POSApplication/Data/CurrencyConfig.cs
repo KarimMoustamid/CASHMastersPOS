@@ -20,12 +20,20 @@ namespace POSApplication.Data
         // Any attempt to modify it will throw a NotSupportedException. internal state will be encapsulated and protected .
         public IReadOnlyList<decimal> GetDenominations() => _denominations.AsReadOnly();
 
+        public void SetDenominations(List<decimal> denominations)
+        {
+            if (denominations == null || denominations.Count == 0)
+            {
+                throw new ArgumentException("Denominations cannot be null or empty.");
+            }
+
+            denominations.Sort((a, b) => b.CompareTo(a)); // Descending order
+            _denominations = new List<decimal>(denominations);
+        }
+
         public CurrencyConfig()
         {
             _denominations = new List<decimal>();
-            //  TODO : Load the configuration
-            Console.WriteLine($"Current Directory: {Directory.GetCurrentDirectory()}");
-
             // Load configuration from the JSON file
             LoadFromFile("CurrencyConfig.json");
         }
@@ -39,7 +47,7 @@ namespace POSApplication.Data
                 // Building the file path relative to the application's base directory
                 // string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
-                Console.WriteLine($"Loading configuration file from : {filePath}");
+                // Console.WriteLine($"Loading configuration file from : {filePath}");
 
                 // Check if the file exists
                 if (!File.Exists(filePath))
@@ -61,20 +69,17 @@ namespace POSApplication.Data
                 // Testing Load us denominations
                 // TODO : Fix hardcoded CurrencyCodes
                 var usCurrency = config.Currencies.FirstOrDefault(c => c.CurrencyCode == "USD");
-                if (usCurrency == null || usCurrency?.Denominations?.Count == 0)
+                if (usCurrency == null || usCurrency.Denominations == null || usCurrency?.Denominations?.Count == 0)
                 {
                     throw new InvalidDataException($"US denominations not found in file {filename}.");
                 }
 
-                Console.WriteLine($"UsCurrency: {usCurrency?.Denominations?[0]}");
-                // TODO : SET the _denominations
-
+                SetDenominations(usCurrency?.Denominations!);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while loading the configuration: {ex.Message}");
             }
         }
-
     }
 }

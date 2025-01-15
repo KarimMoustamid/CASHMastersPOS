@@ -1,0 +1,42 @@
+
+# Rider-specific files
+.idea/
+.idea_modules/
+
+# User-specific files
+*.iml
+*.iws
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionary.xml
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/modules.xml
+.idea/*.html
+.idea/.idea-shell-scripts
+
+# Gradle
+.gradle/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# .NET-specific
+bin/
+obj/
+*.user
+*.suo
+*.sln.dotsettings.user
+
+# Environment settings
+.env
+.env.*
+
+# xUnit-related
+TestResults/
+*.trx
+coverage.opencover.xml
+coverage.cobertura.xml
+**/coverage/*

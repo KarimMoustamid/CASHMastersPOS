@@ -1,23 +1,11 @@
-﻿Console.WriteLine("Welcome to the CASH Masters POS System!\n");
+﻿using POSApplication.Data.AfterRefinmentDemo;
 
-// var denominations = CurrencyConfig.Instance.GetDenominations();
-// Console.WriteLine("Loaded Denominations:\n");
-//
-// foreach (var denomination in denominations)
-// {
-//     Console.WriteLine(denomination);
-// }
-//
+Console.WriteLine("Welcome to the CASH Masters POS System!\n");
 
-// Demo :
-
-// Access the singleton instance
-var config = CurrencyConfigDemo.Instance;
-
-// Display existing currencies
-var currencies = config.GetCurrencies();
-Console.WriteLine("Existing Currencies:");
-foreach (var currency in currencies)
+// Display available countries
+var availableCountries = CurrencyConfig.Instance.GetAvailableCountries();
+Console.WriteLine("Available Currencies :\n");
+foreach (var country in availableCountries)
 {
-    Console.WriteLine($"Currency Code: {currency.Key}, Denominations: {string.Join(", ", currency.Value)}");
+   Console.WriteLine($"- {country}");
 }

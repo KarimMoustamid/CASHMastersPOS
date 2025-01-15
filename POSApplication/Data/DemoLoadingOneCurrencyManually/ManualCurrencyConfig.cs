@@ -5,13 +5,13 @@ namespace POSApplication.Data
     using BusinessLogic.Utilities;
     using Models;
 
-    public class CurrencyConfig
+    public class ManualCurrencyConfig
     {
-        // Singleton instance of CurrencyConfig to ensure only one instance is created
+        // Singleton instance of ManualCurrencyConfig to ensure only one instance is created
         // Lazy<T> : provide lazy initialization (object is created only when it´s accessed for the first time) , Lazy<T> is thread safe .
         // _instance : it will be only accessed within the class , it´s shared across all instances of the class and cannot be reassigned
-        private static readonly Lazy<CurrencyConfig> _instance = new(() => new CurrencyConfig());
-        public static CurrencyConfig Instance => _instance.Value; // accessing the .Value will execute the initialization logic
+        private static readonly Lazy<ManualCurrencyConfig> _instance = new(() => new ManualCurrencyConfig());
+        public static ManualCurrencyConfig Instance => _instance.Value; // accessing the .Value will execute the initialization logic
 
         // represent currency denominations
         private List<decimal> _denominations;
@@ -32,11 +32,11 @@ namespace POSApplication.Data
             _denominations = new List<decimal>(denominations);
         }
 
-        public CurrencyConfig()
+        public ManualCurrencyConfig()
         {
             _denominations = new List<decimal>();
             // Load configuration from the JSON file
-            LoadFromFile("CurrencyConfig.json");
+            LoadFromFile("ManualCurrencyConfig.json");
         }
 
 

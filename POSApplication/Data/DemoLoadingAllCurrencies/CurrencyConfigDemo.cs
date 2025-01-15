@@ -4,7 +4,7 @@ using POSApplication.Data.Models;
 
 public class CurrencyConfigDemo
 {
-    // Singleton instance of CurrencyConfig
+    // Singleton instance of ManualCurrencyConfig
     private static readonly Lazy<CurrencyConfigDemo> _instance = new(() => new CurrencyConfigDemo());
     public static CurrencyConfigDemo Instance => _instance.Value;
 
@@ -22,7 +22,7 @@ public class CurrencyConfigDemo
     {
         _currencies = new Dictionary<string, List<decimal>>();
         // Load configuration from the JSON file
-        LoadFromFile("CurrencyConfig.json");
+        LoadFromFile("ManualCurrencyConfig.json");
     }
 
     public void LoadFromFile(string filename)

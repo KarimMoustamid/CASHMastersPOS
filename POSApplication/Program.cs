@@ -1,4 +1,5 @@
-﻿using POSApplication.Data.AfterRefinmentDemo;
+﻿using POSApplication.BusinessLogic;
+using POSApplication.Data.AfterRefinmentDemo;
 using POSApplication.Data.Models;
 
 
@@ -34,12 +35,19 @@ try
 
 // change calculation
     Console.Write("\nEnter the price of the item(s): ");
-    var price = decimal.Parse(Console.ReadLine() ?? "0");
+    var price = decimal.Parse(Console.ReadLine() ?? "0"); //  if no input is provided , the fallback value is "0" .
 
     Console.Write("Enter the amount paid by the customer: ");
     var paid = decimal.Parse(Console.ReadLine() ?? "0");
 
-// var change = Implement CalculateChange(price, paid);
+    var change = ChangeCalculator.CalculateChange(price, paid, denominations);
+
+    Console.WriteLine("\nChange to return:");
+    foreach (var item in change)
+    {
+        Console.WriteLine($"{item.Value} x {item.Key:C}");
+    }
+
 }
 catch (Exception ex)
 {

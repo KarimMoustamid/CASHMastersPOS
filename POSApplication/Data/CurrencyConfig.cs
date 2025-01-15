@@ -18,5 +18,9 @@ namespace POSApplication.Data
 
 
         // TODO : Create a LoadFromFile Method
+
+        //provides a snapshot of _denominations's current state in a read-only form.
+        // Any attempt to modify it will throw a NotSupportedException. internal state will be encapsulated and protected .
+        public IReadOnlyList<decimal> GetDenominations() => _denominations.AsReadOnly();
     }
 }

@@ -52,3 +52,9 @@ Since other engineers will use your function, you should:
 <br>
 <br>
 </hr>
+
+
+<p>For a detailed explanation of the implementation process, technical decisions, and overall design, please refer to the corresponding public GitHub project. The project provides insights into the thinking process, including decisions made regarding functional and non-functional requirements, data structures, and global configuration. You can find all the details here:</p>
+
+<a href="https://github.com/users/KarimMoustamid/projects/7/views/1" target="_blank">GitHub Project: POS System Change
+Calculation</a>

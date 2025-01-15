@@ -1,3 +1,4 @@
+using POSApplication.BusinessLogic.Services;
 using POSApplication.Data.Models;
 
 public static class InputValidator
@@ -23,6 +24,20 @@ public static class InputValidator
         if (price < 0)
         {
             throw new ArgumentException("Price cannot be negative.");
+        }
+    }
+
+    public static string ValidateInput(Logger logger, Func<string, bool> validation, string errorMessage)
+    {
+        while (true)
+        {
+            var input = Console.ReadLine()?.Trim();
+            if (validation(input))
+            {
+                return input;
+            }
+
+            logger.LogWarning(errorMessage);
         }
     }
 }

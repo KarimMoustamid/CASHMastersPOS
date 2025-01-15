@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using POSApplication.BusinessLogic;
 using POSApplication.BusinessLogic.Services;
+using POSApplication.BusinessLogic.Utilities;
 using POSApplication.BusinessLogic.Utilities.Payments;
 using POSApplication.Data.Models;
 
@@ -43,7 +44,15 @@ try
 
     // Let the user choose a country
     Console.Write("\nEnter the currency Code for the currency configuration: ");
-    var currencyCode = InputValidator.ValidateInput( input => !string.IsNullOrWhiteSpace(input), "Invalid currency code! Please try again.");
+
+    // Collect existing currency codes
+    var validCurrencies = new[] {CurrencyConstants.USD, CurrencyConstants.MXN}; // Add other currencies if needed
+
+    var currencyCode = InputValidator.ValidateInput(
+        input =>
+            !string.IsNullOrWhiteSpace(input) && validCurrencies.Contains(input.ToUpper()),
+        $"Invalid currency code! Please try again. Only valid options are: {CurrencyConstants.USD}, {CurrencyConstants.MXN}."
+    );
 
     // Set the selected currency
     CurrencyConfig.Instance.SetCurrency(currencyCode);

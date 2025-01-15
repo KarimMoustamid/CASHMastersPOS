@@ -32,12 +32,12 @@ try
         Console.WriteLine($"- {denom:C}\n");
     }
 
-    // change calculation
+    // Collect Input for change calculation
     Console.Write("\nEnter the price of the item(s): ");
     var price = decimal.Parse(Console.ReadLine() ?? "0"); //  if no input is provided , the fallback value is "0" .
 
     Console.Write("Register the payment breakdown by denomination and coins: \n");
-    var payment = new Dictionary<decimal, int>();
+    var paymentInDenominations = new Dictionary<decimal, int>();
 
     while (true)
     {
@@ -47,24 +47,52 @@ try
         Console.Write("Count: ");
         var count = int.Parse(Console.ReadLine() ?? "0");
 
-        if (payment.ContainsKey(denom))
-            payment[denom] += count;
+        if (paymentInDenominations.ContainsKey(denom))
+            paymentInDenominations[denom] += count;
         else
-            payment[denom] = count;
+            paymentInDenominations[denom] = count;
 
         Console.Write("Add another denomination? (y/n): ");
         if (Console.ReadLine()?.ToLower() != "y")
             break;
     }
 
-    // Calculate Change
-    var change = ChangeCalculator.CalculateChange(price, payment, currencyCode);
+    var totalPaid = CalculateTotalPaid(paymentInDenominations);
+
+    var payment = new Payment
+    {
+        TotalPaid = totalPaid,
+        Denominations = paymentInDenominations
+    };
+
+
+    // TODO : Refactor
+    // Calculate change
+    var calculator = new ChangeCalculator();
+    var change = calculator.CalculateChange(price, payment, currencyCode);
 
     Console.WriteLine("\nChange to return:");
-    foreach (var item in change)
+    foreach (var item in change.Denominations)
     {
         Console.WriteLine($"{item.Value} x {item.Key:C}");
     }
+
+    // TODO : Refactor
+    static decimal CalculateTotalPaid(Dictionary<decimal, int> paymentInDenominations)
+    {
+        decimal total = 0;
+
+        // Iterate through the dictionary to calculate the total
+        foreach (var entry in paymentInDenominations)
+        {
+            decimal denomination = entry.Key;
+            int count = entry.Value;
+            total += denomination * count;
+        }
+
+        return total;
+    }
+
 }
 catch (Exception ex)
 {

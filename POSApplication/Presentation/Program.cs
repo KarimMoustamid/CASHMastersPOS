@@ -5,48 +5,51 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using POSApplication.BusinessLogic;
 using POSApplication.BusinessLogic.config;
-using POSApplication.BusinessLogic.Services;
 using POSApplication.BusinessLogic.Utilities;
 using POSApplication.BusinessLogic.Utilities.Payments;
+using POSApplication.Data;
 using POSApplication.Data.Models;
 
 
-using var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+#region DI_Configuration
+var services = new ServiceCollection();
+services.AddSingleton<ICurrencyConfig, CurrencyConfig>();
+services.AddLogging(config =>
+{
+    config.ClearProviders();
+    config.AddConsole(options =>
     {
-        // Register any additional services if needed
-    })
-    .ConfigureLogging(logging =>
-    {
-        // Clear all default logging providers (e.g., Debug and Console)
-        logging.ClearProviders();
+        options.FormatterName = "Simple"; // Match the formatter name
+    });
 
-        // Add console logging with the custom formatter
-        logging.AddConsole(options =>
-        {
-            options.FormatterName = "Simple"; // Match the formatter name
-        });
+    config.AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>();
+});
 
-        // Register the custom formatter
-        logging.AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>();
-    })
-    .Build();
+var serviceProvider = services.BuildServiceProvider();
 
-// Resolve the logger and write a test message
-var logger = host.Services.GetRequiredService<ILogger<Program>>();
+// Resolve Dependencies :
+var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+var currencyConfig = serviceProvider.GetRequiredService<ICurrencyConfig>();
+
+logger.LogInformation("Currency set successfully: {CurrencyCode}", currencyConfig.GetCurrency()?.CurrencyCode);
+#endregion
+
 
 try
 {
-// Load currency file path from configuration
+    // Load currency file path from configuration
     string currencyFilePath = ConfigLoader.GetCurrencyFilePath();
-    // Initialize the CurrencyConfig instance
-    CurrencyConfig.Instance.Initialize(currencyFilePath);
+    currencyConfig.Initialize(currencyFilePath);
 
-    Console.WriteLine("Currency configuration loaded successfully.");
+    // If we want the system to have a preconfigured currency to a target market, we can set it here:
+    // Add the currency to CurrencyConfig.json:
+    // currencyConfig.SetCurrency("USD");
+
+    logger.LogInformation("Currency set successfully: {CurrencyCode}", currencyConfig.GetCurrency()?.CurrencyCode);
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Error: {ex.Message}");
+    logger.LogError(ex, "An error occurred during currency configuration.");
 }
 
 try
@@ -70,11 +73,11 @@ try
     );
 
     // Set the selected currency
-    CurrencyConfig.Instance.SetCurrency(currencyCode);
+    CurrencyConfigLagacy.Instance.SetCurrency(currencyCode);
     logger.LogInformation("\nCurrency loaded successfully!");
 
 
-    var denominations = CurrencyConfig.Instance.GetDenominations();
+    var denominations = CurrencyConfigLagacy.Instance.GetDenominations();
     logger.LogInformation("\nAvailable Denominations:");
     foreach (var denom in denominations)
     {
@@ -112,5 +115,5 @@ try
 }
 catch (Exception ex)
 {
-    Console.WriteLine(ex.Message);
+    logger.LogError(ex.Message);
 }

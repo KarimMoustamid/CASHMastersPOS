@@ -6,7 +6,7 @@ namespace POSApplication.BusinessLogic
     {
         public Change CalculateChange(decimal price, Payment payment, string currencyCode)
         {
-            var currency = CurrencyConfig.Instance.GetCurrency();
+            var currency = CurrencyConfigLagacy.Instance.GetCurrency();
             var denominations = currency?.Denominations;
 
             InputValidator.ValidatePrice(price);

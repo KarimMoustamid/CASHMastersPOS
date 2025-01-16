@@ -1,6 +1,5 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Console;
-    using POSApplication.BusinessLogic.Services;
     using POSApplication.Data.Models;
 
     public static class Display
@@ -26,7 +25,7 @@
 
         public static void DisplayAvailableCurrencies()
         {
-            var availableCurrencies = CurrencyConfig.Instance.GetAvailableCurrencies();
+            var availableCurrencies = CurrencyConfigLagacy.Instance.GetAvailableCurrencies();
             _logger.LogInformation("\nAvailable Currencies:\n");
             foreach (CurrencyData? currency in availableCurrencies) Console.WriteLine($"- {currency.Country} ({currency.CurrencyCode})");
         }
@@ -59,7 +58,7 @@
                     var denom = decimal.Parse(Console.ReadLine() ?? "0");
 
                     // Validate if the denomination exists in the available denominations
-                    var validDenominations = CurrencyConfig.Instance.GetDenominations();
+                    var validDenominations = CurrencyConfigLagacy.Instance.GetDenominations();
 
                     if (!validDenominations.Contains(denom))
                     {

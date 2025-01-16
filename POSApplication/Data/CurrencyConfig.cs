@@ -1,103 +1,115 @@
-using System.Text.Json;
-using POSApplication.BusinessLogic.config;
-using POSApplication.Data.Models;
-
-public class CurrencyConfig
+namespace POSApplication.Data
 {
-    // Singleton instance of ManualCurrencyConfig to ensure only one instance is created
-    // Lazy<T> : provide lazy initialization (object is created only when it´s accessed for the first time) , Lazy<T> is thread safe .
-    // _instance : it will be only accessed within the class , it´s shared across all instances of the class and cannot be reassigned
-    private static readonly Lazy<CurrencyConfig> _instance = new(() => new CurrencyConfig());
-    public static CurrencyConfig Instance => _instance.Value; // accessing the .Value will execute the initialization logic
+    using System.Text.Json;
+    using Microsoft.Extensions.Logging;
+    using Models;
 
-    // represent currency denominations
-    private List<decimal>? _denominations = new();
-
-    private string? _currencyCountry = string.Empty;
-
-    private CurrencyData _currentCurrency = new();
-
-    private List<CurrencyData> _currencies = new();
-
-    public CurrencyConfig()
+    public class CurrencyConfig : ICurrencyConfig
     {
-      // You can initialize other fields or internal logic here if needed
-    }
+        private readonly ILogger<CurrencyConfig> _logger;
+        private List<decimal>? _denominations = new();
+        private string? _currencyCountry = string.Empty;
+        private CurrencyData _currentCurrency = new();
+        private List<CurrencyData> _currencies = new();
 
-    // Initialization method
-    public void Initialize(string configFilePath)
-    {
-        LoadFromFile(configFilePath);
-        Console.WriteLine("Currency configuration loaded.");
-    }
-
-
-    public void LoadFromFile(string filename)
-    {
-        // Building the file path relative to the application's base directory
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
-        Console.WriteLine(filePath);
-
-        // Check if the file exists
-        if (!File.Exists(filePath))
+        public CurrencyConfig(ILogger<CurrencyConfig> logger)
         {
-            throw new FileNotFoundException($"The configuration file {filename} could not be found in {filePath}.");
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // Read the file content
-        var json = File.ReadAllText(filePath);
-        // Deserialize the JSON content into the currency configuration model
-        var config = JsonSerializer.Deserialize<CurrencyFile>(json);
-
-        // Validate  and assign the  loaded data
-        if (config?.Currencies == null || config.Currencies.Count == 0)
+        public void Initialize(string configFilePath)
         {
-            throw new InvalidDataException($"Invalid or empty configuration file {filename}.");
+            try
+            {
+                LoadFromFile(configFilePath);
+                _logger.LogInformation("Currency configuration loaded successfully from {FilePath}.", configFilePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize currency configuration from {FilePath}.", configFilePath);
+                throw;
+            }
         }
 
-        _currencies = config.Currencies;
-    }
-
-    public void SetCurrency(string currencyCode)
-    {
-        if (string.IsNullOrWhiteSpace(currencyCode))
+        public void LoadFromFile(string filename)
         {
-            throw new ArgumentNullException(nameof(currencyCode), "Currency code cannot be null, empty, or consist only of white-space characters.");
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
+            _logger.LogDebug("Looking for configuration file at: {FilePath}", filePath);
+
+
+            if (!File.Exists(filePath))
+            {
+                _logger.LogError("Configuration file {FileName} could not be found at {FilePath}.", filename, filePath);
+                throw new FileNotFoundException($"The configuration file {filename} could not be found in {filePath}.");
+            }
+
+            try
+            {
+                var json = File.ReadAllText(filePath);
+                var config = JsonSerializer.Deserialize<CurrencyFile>(json);
+
+                if (config?.Currencies == null || config.Currencies.Count == 0)
+                {
+                    _logger.LogError("Invalid or empty configuration file {FileName}.", filename);
+                    throw new InvalidDataException($"Invalid or empty configuration file {filename}.");
+                }
+
+                _currencies = config.Currencies;
+                _logger.LogInformation("Loaded {Count} currencies from {FileName}.", _currencies.Count, filename);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while loading configuration file {FileName}.", filename);
+                throw;
+            }
         }
 
-        // Search for the currency
-        var currency = _currencies.FirstOrDefault(c => string.Equals(c.CurrencyCode, currencyCode, StringComparison.OrdinalIgnoreCase));
-
-        if (currency == null)
+        public void SetCurrency(string currencyCode)
         {
-            throw new KeyNotFoundException(
-                $"The currency code '{currencyCode}' was not found. Please ensure that the code is valid and exists in the available currencies.");
+            if (string.IsNullOrWhiteSpace(currencyCode))
+            {
+                _logger.LogError("Currency code cannot be null, empty, or whitespace.");
+                throw new ArgumentNullException(nameof(currencyCode), "Currency code cannot be null, empty, or consist only of white-space characters.");
+            }
+
+            var currency = _currencies.FirstOrDefault(c => string.Equals(c.CurrencyCode, currencyCode, StringComparison.OrdinalIgnoreCase));
+
+            if (currency == null)
+            {
+                _logger.LogError("Currency code '{CurrencyCode}' not found.", currencyCode);
+                throw new KeyNotFoundException($"The currency code '{currencyCode}' was not found.");
+            }
+
+            if (currency.Denominations == null || currency.Denominations.Count == 0)
+            {
+                _logger.LogError("Currency code '{CurrencyCode}' does not have valid denominations.", currency.CurrencyCode);
+                throw new InvalidOperationException($"The currency code '{currency.CurrencyCode}' does not have any valid denominations.");
+            }
+
+            currency.Denominations.Sort((a, b) => b.CompareTo(a));
+
+            _denominations = new List<decimal>(currency.Denominations);
+            _currencyCountry = currency.CurrencyCode;
+            _currentCurrency = currency;
+
+            _logger.LogInformation("Currency set to {CurrencyCode} with {DenominationCount} denominations.",
+                _currencyCountry,
+                _denominations.Count);
         }
 
-        if (currency.Denominations == null || currency.Denominations.Count == 0)
+        public CurrencyData? GetCurrency() => _currentCurrency;
+
+        public IReadOnlyList<CurrencyData?> GetAvailableCurrencies() => _currencies?.AsReadOnly()!;
+
+        public IReadOnlyList<decimal> GetDenominations()
         {
-            throw new InvalidOperationException($"The currency code '{currency.CurrencyCode}' does not have any valid denominations.");
+            if (string.IsNullOrWhiteSpace(_currencyCountry))
+            {
+                _logger.LogError("No currency has been selected.");
+                throw new InvalidOperationException("No currency has been selected.");
+            }
+
+            return _denominations?.AsReadOnly();
         }
-
-        // Sort denominations in descending order
-        currency.Denominations.Sort((a, b) => b.CompareTo(a));
-
-        _denominations = new List<decimal>(currency.Denominations);
-        _currencyCountry = currency.CurrencyCode;
-        _currentCurrency = currency;
-    }
-
-    public CurrencyData? GetCurrency() => _currentCurrency;
-
-    public IReadOnlyList<CurrencyData?> GetAvailableCurrencies() => _currencies?.AsReadOnly()!;
-
-    public IReadOnlyList<decimal> GetDenominations()
-    {
-        if (string.IsNullOrWhiteSpace(_currencyCountry))
-        {
-            throw new InvalidOperationException("No currency has been selected ");
-        }
-
-        return _denominations?.AsReadOnly();
     }
 }

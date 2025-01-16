@@ -1,30 +1,39 @@
 namespace POSApplication.Tests
 {
+    using BusinessLogic.Utilities;
     using Data;
-    using Data.Models;
     using Moq;
 
     public class CurrencyConfigTests
     {
         [Fact]
-        public void SetCurrency_ValidCurrency_SetsCurrencySuccessfully()
+        public void Initialize_Should_Set_CurrencyFilePath()
         {
             // Arrange
             var mockCurrencyConfig = new Mock<ICurrencyConfig>();
-            var currencyData = new CurrencyData
-            {
-                CurrencyCode = "USD",
-                Denominations = new List<decimal> { 100, 50, 20, 10, 5, 1, 0.25m }
-            };
-
-            mockCurrencyConfig.Setup(c => c.GetCurrency()).Returns(currencyData);
+            string testFilePath = "path/to/test/currency.json";
 
             // Act
-            var selectedCurrency = mockCurrencyConfig.Object.GetCurrency();
+            mockCurrencyConfig.Object.Initialize(testFilePath);
 
             // Assert
-            Assert.NotNull(selectedCurrency);
-            Assert.Equal("USD", selectedCurrency?.CurrencyCode);
+            mockCurrencyConfig.Verify(x => x.Initialize(testFilePath), Times.Once);
         }
+
+        [Fact]
+        public void SetCurrency_Should_Set_Default_Currency()
+        {
+            // Arrange
+            var mockCurrencyConfig = new Mock<ICurrencyConfig>();
+
+            // Act
+            mockCurrencyConfig.Object.SetCurrency(CurrencyConstants.USD);
+
+            // Assert
+            mockCurrencyConfig.Verify(x => x.SetCurrency(CurrencyConstants.USD), Times.Once);
+        }
+
+
+
     }
 }

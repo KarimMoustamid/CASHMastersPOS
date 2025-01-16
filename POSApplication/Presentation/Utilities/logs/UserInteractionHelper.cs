@@ -4,7 +4,7 @@ using POSApplication.Data;
 using POSApplication.Data.Models;
 using POSApplication.Presentation.Utilities.logs;
 
-public class UserInteractionHelper
+public class UserInteractionHelper : IUserInteractionHelper
 {
     private readonly ILogger<UserInteractionHelper> _logger;
     private readonly ICurrencyConfig _currencyConfig;
@@ -26,8 +26,6 @@ public class UserInteractionHelper
         }
     }
 
-    #region LegacyMethod
-    // Method to display available currencies and collect user input
     public void DisplayAvailableCurrencies()
     {
         try
@@ -118,5 +116,4 @@ public class UserInteractionHelper
 
         return paymentInDenominations;
     }
-    #endregion
 }

@@ -74,34 +74,12 @@ try
 {
     logger.LogInformation("\n\nWelcome to the CASH Masters POS System!\n");
 
-    // Let the user choose a country
-    // Console.Write("\nEnter the currency Code for the currency configuration: ");
-
-    // Collect existing currency codes
-    // var validCurrencies = new[] {CurrencyConstants.USD, CurrencyConstants.MXN}; // Add other currencies if needed
-    //
-    // var currencyCode = InputValidator.ValidateInput(
-    //     input =>
-    //         !string.IsNullOrWhiteSpace(input) && validCurrencies.Contains(input.ToUpper()),
-    //     $"Invalid currency code! Please try again. Only valid options are: {CurrencyConstants.USD}, {CurrencyConstants.MXN}."
-    // );
-
-    // // Set the selected currency
-    // CurrencyConfigLagacy.Instance.SetCurrency(currencyCode);
-    // logger.LogInformation("\nCurrency loaded successfully!");
-    //
-
-    // var denominations = CurrencyConfigLagacy.Instance.GetDenominations();
-    // logger.LogInformation("\nAvailable Denominations:");
-    // foreach (var denom in denominations)
-    // {
-    //     Console.WriteLine($"- {denom:C}\n");
-    // }
+    userInteractionHelper.CurrencyDenominations();
 
     // Collect Input for change calculation
     var price = userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
 
-    Console.Write("\nRegister the payment breakdown by denomination and coins: \n");
+    Console.WriteLine("\nPlease register the payment by entering the denominations and coins: \n");
     var paymentInDenominations = userInteractionHelper.CollectPaymentInput();
 
     // Calculate the total paid

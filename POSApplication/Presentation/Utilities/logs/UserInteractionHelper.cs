@@ -15,6 +15,18 @@ public class UserInteractionHelper
         _currencyConfig = currencyConfig ?? throw new ArgumentNullException(nameof(currencyConfig));
     }
 
+    public void CurrencyDenominations()
+    {
+        var denominations = _currencyConfig.GetDenominations();
+        _logger.LogInformation("\nAvailable denominations:");
+        foreach (var denom in denominations)
+        {
+            Console.WriteLine($"- {denom:C}\n");
+        }
+    }
+
+    #region LegacyMethod
+    // Method to display available currencies and collect user input
     public void DisplayAvailableCurrencies()
     {
         try
@@ -105,4 +117,5 @@ public class UserInteractionHelper
 
         return paymentInDenominations;
     }
+    #endregion
 }

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using POSApplication.BusinessLogic;
 using POSApplication.BusinessLogic.config;
-using POSApplication.BusinessLogic.Services;
 using POSApplication.BusinessLogic.Utilities;
 using POSApplication.BusinessLogic.Utilities.Payments;
 using POSApplication.Data.Models;

@@ -1,6 +1,5 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Console;
-    using POSApplication.BusinessLogic.Services;
     using POSApplication.Data.Models;
 
     public static class Display

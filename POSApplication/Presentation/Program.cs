@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using POSApplication.BusinessLogic;
+using POSApplication.BusinessLogic.config;
 using POSApplication.BusinessLogic.Services;
 using POSApplication.BusinessLogic.Utilities;
 using POSApplication.BusinessLogic.Utilities.Payments;
@@ -33,6 +35,19 @@ using var host = Host.CreateDefaultBuilder(args)
 // Resolve the logger and write a test message
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
 
+try
+{
+// Load currency file path from configuration
+    string currencyFilePath = ConfigLoader.GetCurrencyFilePath();
+    // Initialize the CurrencyConfig instance
+    CurrencyConfig.Instance.Initialize(currencyFilePath);
+
+    Console.WriteLine("Currency configuration loaded successfully.");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}
 
 try
 {
@@ -65,8 +80,9 @@ try
     {
         Console.WriteLine($"- {denom:C}\n");
     }
+
     // Collect Input for change calculation
-    var price = Display.GetInput<decimal>( "Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
+    var price = Display.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
 
     Console.Write("\nRegister the payment breakdown by denomination and coins: \n");
     var paymentInDenominations = Display.CollectPaymentInput();

@@ -2,7 +2,7 @@ namespace POSApplication.BusinessLogic
 {
     using Data;
     using Data.Models;
-    public class ChangeCalculator
+    public class ChangeCalculator : IChangeCalculator
     {
         private readonly ICurrencyConfig _currencyConfig;
 

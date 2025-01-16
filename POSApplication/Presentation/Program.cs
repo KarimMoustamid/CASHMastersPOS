@@ -14,6 +14,7 @@ using POSApplication.Data.Models;
 #region DI_Configuration
 var services = new ServiceCollection();
 services.AddSingleton<ICurrencyConfig, CurrencyConfig>();
+services.AddTransient<ChangeCalculator>();
 services.AddLogging(config =>
 {
     config.ClearProviders();
@@ -38,6 +39,11 @@ logger.LogInformation("UserInteractionHelper successfully resolved.");
 
 var currencyConfig = serviceProvider.GetRequiredService<ICurrencyConfig>();
 logger.LogInformation("Currency configuration service successfully resolved.");
+
+var changeCalculator = serviceProvider.GetRequiredService<ChangeCalculator>();
+logger.LogInformation("changeCalculator configuration service successfully resolved.");
+
+
 
 // Additional initialization or usage (if applicable)
 logger.LogInformation("Starting application configuration...");
@@ -115,11 +121,18 @@ try
     var calculator = new ChangeCalculator(currencyConfig);
    var currencyCode = currencyConfig.GetCurrency()?.CurrencyCode;
     var change = calculator.CalculateChange(price, payment, currencyCode);
-    logger.LogInformation("\nChange to return:");
 
-    foreach (var item in change.Denominations)
+    if (change.TotalChange == 0) // Assuming 'TotalAmount' is a property in 'change' representing the total change
     {
-        Console.WriteLine($"{item.Value} x {item.Key:C}");
+        logger.LogInformation("No change to return.");
+    }
+    else
+    {
+        logger.LogInformation("\nChange to return:");
+        foreach (var item in change.Denominations)
+        {
+            Console.WriteLine($"{item.Value} x {item.Key:C}");
+        }
     }
 }
 catch (Exception ex)

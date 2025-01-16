@@ -25,11 +25,16 @@ services.AddLogging(config =>
     config.AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>();
 });
 
+services.AddTransient<UserInteractionHelper>();
+
 var serviceProvider = services.BuildServiceProvider();
 
 // Resolve Dependencies :
 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Logger successfully resolved.");
+
+var userInteractionHelper = serviceProvider.GetRequiredService<UserInteractionHelper>();
+logger.LogInformation("UserInteractionHelper successfully resolved.");
 
 var currencyConfig = serviceProvider.GetRequiredService<ICurrencyConfig>();
 logger.LogInformation("Currency configuration service successfully resolved.");
@@ -61,41 +66,37 @@ catch (Exception ex)
 #region Console
 try
 {
-    logger.LogInformation("Welcome to the CASH Masters POS System!\n");
-
-    // Display available countries
-    Display.DisplayAvailableCurrencies();
-
+    logger.LogInformation("\n\nWelcome to the CASH Masters POS System!\n");
 
     // Let the user choose a country
-    Console.Write("\nEnter the currency Code for the currency configuration: ");
+    // Console.Write("\nEnter the currency Code for the currency configuration: ");
 
     // Collect existing currency codes
-    var validCurrencies = new[] {CurrencyConstants.USD, CurrencyConstants.MXN}; // Add other currencies if needed
+    // var validCurrencies = new[] {CurrencyConstants.USD, CurrencyConstants.MXN}; // Add other currencies if needed
+    //
+    // var currencyCode = InputValidator.ValidateInput(
+    //     input =>
+    //         !string.IsNullOrWhiteSpace(input) && validCurrencies.Contains(input.ToUpper()),
+    //     $"Invalid currency code! Please try again. Only valid options are: {CurrencyConstants.USD}, {CurrencyConstants.MXN}."
+    // );
 
-    var currencyCode = InputValidator.ValidateInput(
-        input =>
-            !string.IsNullOrWhiteSpace(input) && validCurrencies.Contains(input.ToUpper()),
-        $"Invalid currency code! Please try again. Only valid options are: {CurrencyConstants.USD}, {CurrencyConstants.MXN}."
-    );
+    // // Set the selected currency
+    // CurrencyConfigLagacy.Instance.SetCurrency(currencyCode);
+    // logger.LogInformation("\nCurrency loaded successfully!");
+    //
 
-    // Set the selected currency
-    CurrencyConfigLagacy.Instance.SetCurrency(currencyCode);
-    logger.LogInformation("\nCurrency loaded successfully!");
-
-
-    var denominations = CurrencyConfigLagacy.Instance.GetDenominations();
-    logger.LogInformation("\nAvailable Denominations:");
-    foreach (var denom in denominations)
-    {
-        Console.WriteLine($"- {denom:C}\n");
-    }
+    // var denominations = CurrencyConfigLagacy.Instance.GetDenominations();
+    // logger.LogInformation("\nAvailable Denominations:");
+    // foreach (var denom in denominations)
+    // {
+    //     Console.WriteLine($"- {denom:C}\n");
+    // }
 
     // Collect Input for change calculation
-    var price = Display.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
+    var price = userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
 
     Console.Write("\nRegister the payment breakdown by denomination and coins: \n");
-    var paymentInDenominations = Display.CollectPaymentInput();
+    var paymentInDenominations = userInteractionHelper.CollectPaymentInput();
 
     // Calculate the total paid
     var calculate = new Calculate();
@@ -111,7 +112,8 @@ try
     logger.LogInformation($"\nTotal amount paid: {totalPaid:C}");
 
     // Calculate change
-    var calculator = new ChangeCalculator();
+    var calculator = new ChangeCalculator(currencyConfig);
+   var currencyCode = currencyConfig.GetCurrency()?.CurrencyCode;
     var change = calculator.CalculateChange(price, payment, currencyCode);
     logger.LogInformation("\nChange to return:");
 

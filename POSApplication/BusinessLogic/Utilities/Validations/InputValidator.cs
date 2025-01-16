@@ -22,7 +22,7 @@ public static class InputValidator
         _logger = loggerFactory.CreateLogger("InputValidator"); // Generic logger for a static class
     }
 
-    public static void ValidatePayment(Payment payment, List<decimal> validDenominations)
+    public static void ValidatePayment(Payment payment, IReadOnlyList<decimal> validDenominations)
     {
         foreach (var denom in payment.Denominations.Keys)
             if (!validDenominations.Contains(denom))

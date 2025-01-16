@@ -55,6 +55,7 @@ namespace POSApplication.Data
                 }
 
                 _currencies = config.Currencies;
+                // TODO : This log can be a security risk !!
                 _logger.LogInformation("Loaded {Count} currencies from {FileName}.", _currencies.Count, filename);
             }
             catch (Exception ex)

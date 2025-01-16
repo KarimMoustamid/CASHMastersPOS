@@ -29,29 +29,36 @@ var serviceProvider = services.BuildServiceProvider();
 
 // Resolve Dependencies :
 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-var currencyConfig = serviceProvider.GetRequiredService<ICurrencyConfig>();
+logger.LogInformation("Logger successfully resolved.");
 
-logger.LogInformation("Currency set successfully: {CurrencyCode}", currencyConfig.GetCurrency()?.CurrencyCode);
+var currencyConfig = serviceProvider.GetRequiredService<ICurrencyConfig>();
+logger.LogInformation("Currency configuration service successfully resolved.");
+
+// Additional initialization or usage (if applicable)
+logger.LogInformation("Starting application configuration...");
 #endregion
 
-
+#region ApplicationPreConfiguration
 try
 {
     // Load currency file path from configuration
     string currencyFilePath = ConfigLoader.GetCurrencyFilePath();
     currencyConfig.Initialize(currencyFilePath);
 
+    // The default currency is set to USD
     // If we want the system to have a preconfigured currency to a target market, we can set it here:
     // Add the currency to CurrencyConfig.json:
-    // currencyConfig.SetCurrency("USD");
+    currencyConfig.SetCurrency(CurrencyConstants.USD);
 
-    logger.LogInformation("Currency set successfully: {CurrencyCode}", currencyConfig.GetCurrency()?.CurrencyCode);
+    logger.LogInformation("Currency {CurrencyCode} was configured successfully.", currencyConfig.GetCurrency()?.CurrencyCode);
 }
 catch (Exception ex)
 {
     logger.LogError(ex, "An error occurred during currency configuration.");
 }
+#endregion
 
+#region Console
 try
 {
     logger.LogInformation("Welcome to the CASH Masters POS System!\n");
@@ -117,3 +124,4 @@ catch (Exception ex)
 {
     logger.LogError(ex.Message);
 }
+#endregion

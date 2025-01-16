@@ -11,12 +11,7 @@ public static class InputValidator
     {
         using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.AddConsole(options =>
-            {
-                options.FormatterName = "simple"; // Use the custom formatter
-            });
-
-            builder.AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>();
+            builder.AddConsole();
         });
 
         _logger = loggerFactory.CreateLogger("InputValidator"); // Generic logger for a static class

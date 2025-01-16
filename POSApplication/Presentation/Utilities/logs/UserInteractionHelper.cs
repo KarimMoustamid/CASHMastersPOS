@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using POSApplication.Data;
 using POSApplication.Data.Models;
+using POSApplication.Presentation.Utilities.logs;
 
 public class UserInteractionHelper
 {
@@ -18,7 +19,7 @@ public class UserInteractionHelper
     public void CurrencyDenominations()
     {
         var denominations = _currencyConfig.GetDenominations();
-        _logger.LogInformation("\nAvailable denominations:");
+        AppLogger.LogInfo("Available denominations:\n");
         foreach (var denom in denominations)
         {
             Console.WriteLine($"- {denom:C}\n");

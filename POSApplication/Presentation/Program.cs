@@ -9,6 +9,7 @@ using POSApplication.BusinessLogic.Utilities;
 using POSApplication.BusinessLogic.Utilities.Payments;
 using POSApplication.Data;
 using POSApplication.Data.Models;
+using POSApplication.Presentation.Utilities.logs;
 
 
 #region DI_Configuration
@@ -44,7 +45,6 @@ var changeCalculator = serviceProvider.GetRequiredService<ChangeCalculator>();
 logger.LogInformation("changeCalculator configuration service successfully resolved.");
 
 
-
 // Additional initialization or usage (if applicable)
 logger.LogInformation("Starting application configuration...");
 #endregion
@@ -61,7 +61,8 @@ try
     // Add the currency to CurrencyConfig.json:
     currencyConfig.SetCurrency(CurrencyConstants.USD);
 
-    logger.LogInformation("Currency {CurrencyCode} was configured successfully.", currencyConfig.GetCurrency()?.CurrencyCode);
+    logger.LogInformation("Currency {CurrencyCode} was configured successfully.\n\n", currencyConfig.GetCurrency()?.CurrencyCode);
+
 }
 catch (Exception ex)
 {
@@ -72,14 +73,14 @@ catch (Exception ex)
 #region Console
 try
 {
-    logger.LogInformation("\n\nWelcome to the CASH Masters POS System!\n");
+    AppLogger.LogSuccess("Welcome to the CASH Masters POS System!\n");
 
     userInteractionHelper.CurrencyDenominations();
 
     // Collect Input for change calculation
     var price = userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
 
-    Console.WriteLine("\nPlease register the payment by entering the denominations and coins: \n");
+    AppLogger.LogWarning("\nPlease register the payment by entering the denominations and coins: \n");
     var paymentInDenominations = userInteractionHelper.CollectPaymentInput();
 
     // Calculate the total paid
@@ -93,20 +94,20 @@ try
     };
 
 
-    logger.LogInformation($"\nTotal amount paid: {totalPaid:C}");
+    AppLogger.LogSuccess($"\nTotal amount paid: {totalPaid:C}");
 
     // Calculate change
     var calculator = new ChangeCalculator(currencyConfig);
-   var currencyCode = currencyConfig.GetCurrency()?.CurrencyCode;
+    var currencyCode = currencyConfig.GetCurrency()?.CurrencyCode;
     var change = calculator.CalculateChange(price, payment, currencyCode);
 
-    if (change.TotalChange == 0) // Assuming 'TotalAmount' is a property in 'change' representing the total change
+    if (change.TotalChange == 0)
     {
-        logger.LogInformation("No change to return.");
+        AppLogger.LogError("No change to return.");
     }
     else
     {
-        logger.LogInformation("\nChange to return:");
+        AppLogger.LogWarning("\nChange to return:");
         foreach (var item in change.Denominations)
         {
             Console.WriteLine($"{item.Value} x {item.Key:C}");

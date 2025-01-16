@@ -4,18 +4,25 @@ using POSApplication.Data;
 using POSApplication.Data.Models;
 using POSApplication.Presentation.Utilities.logs;
 
+// Helper class to interact with the user and handle inputs related to currency, payments, and configurations.
+// This class simplifies user interactions and ensures proper logging and validation during operations.
 public class UserInteractionHelper : IUserInteractionHelper
 {
-    private readonly ILogger<UserInteractionHelper> _logger;
-    private readonly ICurrencyConfig _currencyConfig;
+    private readonly ILogger<UserInteractionHelper> _logger; // Logger for logging information, warnings, and errors.
+    private readonly ICurrencyConfig _currencyConfig; // Dependency to manage currency configurations.
 
-    // Constructor to inject dependencies
+    // Constructor to inject dependencies.
+    // Parameters:
+    // - logger: Tool for logging information and issues during runtime.
+    // - currencyConfig: The interface to handle currency-specific operations like fetching denominations.
     public UserInteractionHelper(ILogger<UserInteractionHelper> logger, ICurrencyConfig currencyConfig)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _currencyConfig = currencyConfig ?? throw new ArgumentNullException(nameof(currencyConfig));
     }
 
+    // Displays available currency denominations to the console.
+    // Retrieves valid denominations for the current currency and prints them in a formatted way.
     public void CurrencyDenominations()
     {
         var denominations = _currencyConfig.GetDenominations();
@@ -26,6 +33,9 @@ public class UserInteractionHelper : IUserInteractionHelper
         }
     }
 
+    // Displays available currencies to the console.
+    // Retrieves a list of currencies and prints their associated country and currency code.
+    // Logs errors if an exception occurs during the process.
     public void DisplayAvailableCurrencies()
     {
         try
@@ -45,6 +55,13 @@ public class UserInteractionHelper : IUserInteractionHelper
         }
     }
 
+    // Generic method to prompt and parse user input.
+    // Continuously asks the user to input a value of type T until a valid response is provided.
+    // Parameters:
+    // - prompt: The message to display to the user.
+    // - errorMessage: The message to log and display in case of input errors.
+    // Returns:
+    // - The input value converted to type T.
     public T GetInput<T>(string prompt, string errorMessage)
     {
         while (true)
@@ -63,6 +80,11 @@ public class UserInteractionHelper : IUserInteractionHelper
         }
     }
 
+    // Collects payment information from the user in the form of denominations and counts.
+    // Repeatedly prompts the user to enter payment details, such as denomination values and their counts,
+    // validating each entry against the available currency denominations.
+    // Returns:
+    // - A dictionary where the key is the denomination and the value is the count entered by the user.
     public Dictionary<decimal, int> CollectPaymentInput()
     {
         var paymentInDenominations = new Dictionary<decimal, int>();
@@ -79,7 +101,7 @@ public class UserInteractionHelper : IUserInteractionHelper
                     continue;
                 }
 
-                // Validate if the denomination exists in the available denominations
+                // Validate if the denomination exists in the available denominations.
                 var validDenominations = _currencyConfig.GetDenominations();
 
                 if (!validDenominations.Contains(denom))
@@ -89,13 +111,15 @@ public class UserInteractionHelper : IUserInteractionHelper
                     continue;
                 }
 
-                Console.Write($"How many {denom} bill or coins is the customer giving? Enter count: ");                if (!int.TryParse(Console.ReadLine(), out var count) || count < 0)
+                Console.Write($"How many {denom} bill or coins is the customer giving? Enter count: ");
+                if (!int.TryParse(Console.ReadLine(), out var count) || count < 0)
                 {
                     _logger.LogWarning("Invalid count input.");
                     Console.WriteLine("Invalid count. Please enter a positive integer.");
                     continue;
                 }
 
+                // Add or update count for the entered denomination.
                 if (paymentInDenominations.ContainsKey(denom))
                     paymentInDenominations[denom] += count;
                 else

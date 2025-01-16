@@ -2,7 +2,7 @@ namespace POSApplication.Presentation.Utilities.logs
 {
     using System.Drawing;
 
-    public static class AppLogger
+    public static class ConsoleHelper
     {
         public static void LogInfo(string message)
         {

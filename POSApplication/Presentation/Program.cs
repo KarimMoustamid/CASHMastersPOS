@@ -12,19 +12,14 @@ using POSApplication.Data.Models;
 using POSApplication.Presentation.Utilities.logs;
 
 
-#region DI_Configuration
+#region DI
 var services = new ServiceCollection();
 services.AddSingleton<ICurrencyConfig, CurrencyConfig>();
 services.AddTransient<ChangeCalculator>();
 services.AddLogging(config =>
 {
     config.ClearProviders();
-    config.AddConsole(options =>
-    {
-        options.FormatterName = "Simple"; // Match the formatter name
-    });
-
-    config.AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>();
+    config.AddConsole();
 });
 
 services.AddTransient<UserInteractionHelper>();
@@ -73,14 +68,14 @@ catch (Exception ex)
 #region Console
 try
 {
-    AppLogger.LogSuccess("Welcome to the CASH Masters POS System!\n");
+    ConsoleHelper.LogSuccess("Welcome to the CASH Masters POS System!\n");
 
     userInteractionHelper.CurrencyDenominations();
 
     // Collect Input for change calculation
     var price = userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price! Please enter a valid decimal value.");
 
-    AppLogger.LogWarning("\nPlease register the payment by entering the denominations and coins: \n");
+    ConsoleHelper.LogWarning("\nPlease register the payment by entering the denominations and coins: \n");
     var paymentInDenominations = userInteractionHelper.CollectPaymentInput();
 
     // Calculate the total paid
@@ -94,7 +89,7 @@ try
     };
 
 
-    AppLogger.LogSuccess($"\nTotal amount paid: {totalPaid:C}");
+    ConsoleHelper.LogSuccess($"\nTotal amount paid: {totalPaid:C}");
 
     // Calculate change
     var calculator = new ChangeCalculator(currencyConfig);
@@ -103,11 +98,11 @@ try
 
     if (change.TotalChange == 0)
     {
-        AppLogger.LogError("No change to return.");
+        ConsoleHelper.LogError("No change to return.");
     }
     else
     {
-        AppLogger.LogWarning("\nChange to return:");
+        ConsoleHelper.LogWarning("\nChange to return:");
         foreach (var item in change.Denominations)
         {
             Console.WriteLine($"{item.Value} x {item.Key:C}");

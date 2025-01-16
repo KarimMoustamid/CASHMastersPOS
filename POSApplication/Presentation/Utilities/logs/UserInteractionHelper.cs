@@ -19,7 +19,7 @@ public class UserInteractionHelper
     public void CurrencyDenominations()
     {
         var denominations = _currencyConfig.GetDenominations();
-        AppLogger.LogInfo("Available denominations:\n");
+        ConsoleHelper.LogInfo("Available denominations:\n");
         foreach (var denom in denominations)
         {
             Console.WriteLine($"- {denom:C}\n");

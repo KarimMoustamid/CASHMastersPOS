@@ -89,7 +89,7 @@ public class UserInteractionHelper : IUserInteractionHelper
                     continue;
                 }
 
-                Console.Write($"How many {denom} bills is the customer giving? Enter count: ");                if (!int.TryParse(Console.ReadLine(), out var count) || count < 0)
+                Console.Write($"How many {denom} bill or coins is the customer giving? Enter count: ");                if (!int.TryParse(Console.ReadLine(), out var count) || count < 0)
                 {
                     _logger.LogWarning("Invalid count input.");
                     Console.WriteLine("Invalid count. Please enter a positive integer.");

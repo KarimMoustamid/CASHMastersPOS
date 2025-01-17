@@ -2,6 +2,7 @@ namespace POSApplication.BusinessLogic
 {
     using Data;
     using Data.Models;
+    using Presentation.Utilities.logs;
 
     // Class responsible for calculating the change given a price, payment, and currency.
     // Implements the IChangeCalculator interface.
@@ -9,6 +10,10 @@ namespace POSApplication.BusinessLogic
     {
         // Dependency field to hold the currency configuration, injected via the constructor.
         private readonly ICurrencyConfig _currencyConfig;
+
+
+        // Helper instance for handling user interactions like input collection and display, to facilitate the change calculation process.
+        private readonly UserInteractionHelper _userInteractionHelper;
 
         // Constructor for dependency injection.
         // Accepts an implementation of ICurrencyConfig to provide currency details such as denominations.
@@ -52,7 +57,8 @@ namespace POSApplication.BusinessLogic
 
             // If the total payment is insufficient, throw an error.
             if (changeToReturn < 0)
-                throw new ArgumentException("Insufficient payment provided.");
+                ConsoleHelper.LogError("The payment provided is insufficient. Please collect the remaining amount from the client.");
+
 
             // Calculate the denominations to return as change using helper logic.
             var changeDenominations = CalculateChangeDenominations(changeToReturn, denominations);

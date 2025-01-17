@@ -27,8 +27,4 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Presentation\Utilities\" />
-  </ItemGroup>
-
 </Project>

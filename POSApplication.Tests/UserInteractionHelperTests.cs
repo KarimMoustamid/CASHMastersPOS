@@ -11,11 +11,15 @@ namespace POSApplication.Tests
             // Arrange
             var mockInteractionHelper = new Mock<IUserInteractionHelper>();
             mockInteractionHelper
-                .Setup(x => x.GetInput<decimal>("Enter price:", "Invalid input."))
+                .Setup(x => x.GetInput<decimal>("Enter price:", "Invalid input.", It.IsAny<Func<decimal, bool>>()))
                 .Returns(99.99m);
 
             // Act
-            var result = mockInteractionHelper.Object.GetInput<decimal>("Enter price:", "Invalid input.");
+            var result = mockInteractionHelper.Object.GetInput<decimal>(
+                "Enter price:",
+                "Invalid input.",
+                null
+            );
 
             // Assert
             Assert.Equal(99.99m, result);
@@ -54,8 +58,8 @@ namespace POSApplication.Tests
             var mockInteractionHelper = new Mock<IUserInteractionHelper>();
             var samplePaymentData = new Dictionary<decimal, int>
             {
-                { 10.0m, 5 },
-                { 20.0m, 3 }
+                {10.0m, 5},
+                {20.0m, 3}
             };
 
             mockInteractionHelper
@@ -70,6 +74,5 @@ namespace POSApplication.Tests
             Assert.Equal(5, result[10.0m]);
             Assert.Equal(3, result[20.0m]);
         }
-
     }
 }

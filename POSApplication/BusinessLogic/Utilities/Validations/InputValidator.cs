@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using POSApplication.Data.Models;
+using POSApplication.Presentation.Utilities.logs;
 
 public static class InputValidator
 {
@@ -58,6 +59,7 @@ public static class InputValidator
 
             // Logs a warning with the provided error message if validation fails.
             _logger.LogWarning(errorMessage);
+            ConsoleHelper.LogError(errorMessage);
         }
     }
 }

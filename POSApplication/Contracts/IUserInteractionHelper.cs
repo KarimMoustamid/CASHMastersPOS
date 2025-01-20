@@ -19,7 +19,7 @@ namespace POSApplication.Presentation.Utilities.logs
         // - errorMessage: The message to display and log if the input is invalid.
         // Returns:
         // - The user's input converted to the specified type T.
-        T GetInput<T>(string prompt, string errorMessage);
+        T GetInput<T>(string prompt, string errorMessage, Func<T, bool>? validate);
 
         // Collects payment input in the form of a dictionary of denominations and their counts.
         // This method interacts with the user to gather payment details, ensuring validation against

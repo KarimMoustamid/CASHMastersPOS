@@ -63,7 +63,7 @@ public class UserInteractionHelper : IUserInteractionHelper
     // - errorMessage: The message to log and display in case of input errors.
     // Returns:
     // - The input value converted to type T.
-    public T GetInput<T>(string prompt, string errorMessage)
+    public T GetInput<T>(string prompt, string errorMessage, Func<T, bool>? validate = null)
     {
         while (true)
         {
@@ -72,11 +72,21 @@ public class UserInteractionHelper : IUserInteractionHelper
 
             try
             {
-                return (T) Convert.ChangeType(input, typeof(T));
+                var convertedValue = (T) Convert.ChangeType(input, typeof(T));
+
+                // If validation is provided, check the value
+                if (validate == null || validate(convertedValue))
+                {
+                    return convertedValue;
+                }
+
+                // If validation fails, show an error message
+                ConsoleHelper.LogError("Invalid input. Please try again.");
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, errorMessage);
+                Console.WriteLine(errorMessage); // Optional: Display the error message to the user
             }
         }
     }

@@ -49,7 +49,7 @@ namespace POSApplication.Presentation
                 _userInteractionHelper.CurrencyDenominations();
 
                 // Ask the user to input the total price of the items
-                var price = _userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price!");
+                var price = _userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price!", input => input > 0);
 
                 decimal totalPaid = 0.0M; // Tracks the cumulative payment made by the user.
                 var totalChange = -1.0M; // Tracks the total change to be returned.

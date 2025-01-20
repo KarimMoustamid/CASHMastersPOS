@@ -45,7 +45,7 @@ namespace POSApplication.Presentation
                 // Display welcome message to the user
                 ConsoleHelper.LogSuccess("Welcome to the CASH Masters POS System!\n");
 
-                // Display available currencies to the user
+                // Displays available currency denominations to the console
                 _userInteractionHelper.CurrencyDenominations();
 
                 // Ask the user to input the total price of the items

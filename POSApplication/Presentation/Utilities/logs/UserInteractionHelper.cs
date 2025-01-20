@@ -72,6 +72,8 @@ public class UserInteractionHelper : IUserInteractionHelper
 
             try
             {
+                // The `Convert.ChangeType` method converts the object into the desired type, it returns the result as an `object`.
+                // The explicit cast `(T)` is required to convert the `object` returned by `ChangeType` into the generic type `T`.
                 var convertedValue = (T) Convert.ChangeType(input, typeof(T));
 
                 // If validation is provided, check the value
@@ -110,7 +112,8 @@ public class UserInteractionHelper : IUserInteractionHelper
                 if (!decimal.TryParse(Console.ReadLine(), out var denom))
                 {
                     _logger.LogWarning("Invalid denomination input.");
-                    Console.WriteLine("Invalid denomination. Please enter a valid number.");
+                    ConsoleHelper.LogError("Invalid denomination. Please enter a valid number.");
+
                     continue;
                 }
 

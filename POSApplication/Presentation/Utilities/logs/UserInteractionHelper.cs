@@ -94,6 +94,9 @@ public class UserInteractionHelper : IUserInteractionHelper
         {
             try
             {
+
+                // Prompt the user to input a denomination value and try to parse it as a decimal.
+                // If parsing fails, log a warning and ask the user again until a valid input is provided.
                 Console.Write("Enter the denomination given by the customer: ");
                 if (!decimal.TryParse(Console.ReadLine(), out var denom))
                 {

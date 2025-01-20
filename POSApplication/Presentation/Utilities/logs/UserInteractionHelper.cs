@@ -94,7 +94,7 @@ public class UserInteractionHelper : IUserInteractionHelper
         {
             try
             {
-                Console.Write("Denomination: ");
+                Console.Write("Enter the denomination given by the customer: ");
                 if (!decimal.TryParse(Console.ReadLine(), out var denom))
                 {
                     _logger.LogWarning("Invalid denomination input.");

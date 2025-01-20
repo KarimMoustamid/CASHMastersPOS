@@ -112,7 +112,9 @@ public class UserInteractionHelper : IUserInteractionHelper
                     continue;
                 }
 
-                Console.Write($"How many {denom} bill or coins is the customer giving? Enter count: ");
+
+                string denominationType = denom > 20 ? "bill" : "coin";
+                Console.Write($"How many {denom} {denominationType}s is the customer giving? Enter count: ");
                 if (!int.TryParse(Console.ReadLine(), out var count) || count < 0)
                 {
                     _logger.LogWarning("Invalid count input.");

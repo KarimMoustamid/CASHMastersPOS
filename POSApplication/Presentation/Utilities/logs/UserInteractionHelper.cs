@@ -94,7 +94,6 @@ public class UserInteractionHelper : IUserInteractionHelper
         {
             try
             {
-
                 // Prompt the user to input a denomination value and try to parse it as a decimal.
                 // If parsing fails, log a warning and ask the user again until a valid input is provided.
                 Console.Write("Enter the denomination given by the customer: ");
@@ -111,7 +110,11 @@ public class UserInteractionHelper : IUserInteractionHelper
                 if (!validDenominations.Contains(denom))
                 {
                     _logger.LogWarning("Invalid denomination entered: {Denomination}", denom);
-                    Console.WriteLine("Invalid denomination. Please enter a valid denomination.");
+                    ConsoleHelper.LogError("\nInvalid denomination. Please enter a valid denomination.");
+
+                    // Displays available currency denominations to the console
+                    CurrencyDenominations();
+
                     continue;
                 }
 

@@ -1,5 +1,7 @@
 namespace POSApplication.BusinessLogic.config
 {
+    // Including the namespace for Microsoft.Extensions.Configuration, which provides abstractions and various implementations
+    // for configuring .NET applications. This is commonly used for handling configuration from sources like appsettings.json.
     using Microsoft.Extensions.Configuration;
 
     public static class ConfigLoader

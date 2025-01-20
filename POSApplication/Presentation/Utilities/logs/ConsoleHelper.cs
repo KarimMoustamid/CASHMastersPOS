@@ -1,5 +1,6 @@
 namespace POSApplication.Presentation.Utilities.logs
 {
+    // System.Drawing is used to handle colors, particularly for creating custom colors in the LogCustom method.
     using System.Drawing;
 
     // A utility class for logging messages to the console with color coding.

@@ -1,7 +1,8 @@
+// Using directive for logging interface to handle logging within the application.
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
+// Using directive to access data-related functionalities and models within the application's data layer.
 using POSApplication.Data;
-using POSApplication.Data.Models;
+// Using directive for custom logging utilities specific to the presentation layer of the application.
 using POSApplication.Presentation.Utilities.logs;
 
 // Helper class to interact with the user and handle inputs related to currency, payments, and configurations.

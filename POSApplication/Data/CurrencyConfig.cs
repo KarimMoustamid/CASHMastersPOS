@@ -1,11 +1,12 @@
 namespace POSApplication.Data
 {
+    // The `System.Text.Json` namespace is used for handling JSON serialization and deserialization.
     using System.Text.Json;
+    // The `Microsoft.Extensions.Logging` namespace is used for logging functionality in the application.
     using Microsoft.Extensions.Logging;
+    // Imports the models namespace where `CurrencyData` and `CurrencyFile` are defined.
     using Models;
 
-    // Class for managing and providing currency configuration settings.
-    // Implements the ICurrencyConfig interface for accessing and handling currency-related data.
     public class CurrencyConfig : ICurrencyConfig
     {
         // Logger instance for logging messages and errors related to currency configuration.

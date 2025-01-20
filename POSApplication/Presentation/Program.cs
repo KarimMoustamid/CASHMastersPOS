@@ -31,7 +31,7 @@ public class Program
         try
         {
             // Resolving the application's runner class using dependency injection.
-            // ApplicationRunner is assumed to be responsible for running the main logic of the application.
+            // ApplicationRunner is responsible for running the main logic of the application.
             var app = serviceProvider.GetRequiredService<ApplicationRunner>();
 
             // Run the application. The ApplicationRunner is expected to execute the application's core processes.

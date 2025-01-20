@@ -45,6 +45,9 @@ namespace POSApplication.Presentation
                 // Display welcome message to the user
                 ConsoleHelper.LogSuccess("Welcome to the CASH Masters POS System!\n");
 
+                // Display available currencies to the user
+                _userInteractionHelper.CurrencyDenominations();
+
                 // Ask the user to input the total price of the items
                 var price = _userInteractionHelper.GetInput<decimal>("Enter the price of the item(s): ", "Invalid price!");
 
@@ -108,6 +111,13 @@ namespace POSApplication.Presentation
 
                 // Initialize the currency configuration using the file path
                 _currencyConfig.Initialize(currencyFilePath);
+
+
+                // Refer to the "Manage and Add a New Currency" section in the README file for detailed steps
+                // to configure and enable support for additional currencies in the application.
+                // To enable a different currency by default, replace CurrencyConstants.USD with your desired currency constant.
+                // For example, use CurrencyConstants.MXN for Mexican Peso.
+                // _currencyConfig.SetCurrency(CurrencyConstants.MXN);
 
                 // Set the default currency (e.g., USD)
                 _currencyConfig.SetCurrency(CurrencyConstants.USD);

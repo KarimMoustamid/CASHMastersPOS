@@ -86,7 +86,7 @@ public class UserInteractionHelper : IUserInteractionHelper
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, errorMessage);
-                Console.WriteLine(errorMessage); // Optional: Display the error message to the user
+                ConsoleHelper.LogError("Invalid input. Please try again.");
             }
         }
     }

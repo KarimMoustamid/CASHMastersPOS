@@ -1,55 +1,61 @@
-namespace POSApplication.BusinessLogic.config
+using Microsoft.Extensions.Configuration;
+using POSApplication.Data.Models;
+
+public static class ConfigLoader
 {
-    // Including the namespace for Microsoft.Extensions.Configuration, which provides abstractions and various implementations
-    // for configuring .NET applications. This is commonly used for handling configuration from sources like appsettings.json.
-    using Microsoft.Extensions.Configuration;
+    private static IConfiguration? _configuration;
+    private static readonly object _lock = new object(); // Ensure thread safety
+    private const string ConfigFileName = "CurrencyConfig.json";
 
-    public static class ConfigLoader
+    // Lazily load the configuration with thread safety
+    public static IConfiguration LoadConfiguration()
     {
-        // Static field to hold the loaded configuration instance.
-        // This ensures the configuration is loaded only once and reused when needed.
-        private static IConfiguration? _configuration;
-
-        // Static method to initialize and load the configuration object.
-        // This uses a ConfigurationBuilder to read configuration settings
-        // from the project's "appsettings.json" file.
-        public static IConfiguration LoadConfiguration()
+        if (_configuration == null)
         {
-            // Check if the configuration has already been initialized.
-            if (_configuration == null)
+            lock (_lock) // Use a lock to ensure thread safety
             {
-                // Initialize the ConfigurationBuilder.
-                // - Sets the base path to the current application's base directory.
-                // - Loads "appsettings.json", making it a required file (optional: false).
-                // - Allows watching for changes in the file and reloads the configuration accordingly.
-                _configuration = new ConfigurationBuilder()
-                    .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
+                if (_configuration == null)
+                {
+                    _configuration = new ConfigurationBuilder()
+                        .SetBasePath(AppContext.BaseDirectory)
+                        .AddJsonFile(ConfigFileName, optional: false, reloadOnChange: true)
+                        .Build();
+                }
             }
-
-            // Return the initialized configuration object.
-            return _configuration;
         }
 
-        // Helper method to retrieve the "CurrencyFilePath" setting from the configuration.
-        // This makes it easier to access specific configuration values without exposing
-        // the entire IConfiguration object.
-        public static string GetCurrencyFilePath()
-        {
-            // Get the "CurrencyFilePath" value from the configuration.
-            var configuration = LoadConfiguration();
+        return _configuration;
+    }
 
-            // Validate that the retrieved value is not null or empty.
-            // If the value is missing or empty, throw an exception to indicate the issue.
-            var filePath = configuration["CurrencyFilePath"];
-            if (string.IsNullOrEmpty(filePath))
+    // Retrieve all currencies from the configuration
+    public static List<CurrencyData> LoadAllCurrenciesFromConfig()
+    {
+        try
+        {
+            var configuration = LoadConfiguration();
+            var currencies = configuration.GetSection("Currencies").Get<List<CurrencyData>>();
+            if (currencies == null || currencies.Count == 0)
             {
-                throw new InvalidOperationException("CurrencyFilePath is missing or empty in appsettings.json.");
+                throw new InvalidOperationException("No currencies found in the configuration file.");
             }
 
-            // Return the valid file path.
-            return filePath;
+            return currencies;
+        }
+        catch (Exception ex)
+        {
+            // Log the error appropriately (use a structured logging library in production)
+            Console.Error.WriteLine($"Error loading currencies from configuration: {ex}");
+
+            // Optionally rethrow or indicate an issue
+            throw new InvalidOperationException("Failed to load currencies from configuration.", ex);
         }
     }
+
+    public static string GetConfigurationFilePath()
+    {
+        // Combines the application's base directory with the filename to get the full path of the configuration file
+        return Path.Combine(AppContext.BaseDirectory, ConfigFileName);
+    }
+
+
 }

@@ -6,15 +6,10 @@ namespace POSApplication.Data
     // Enables managing currencies, including initialization, selection, and retrieval of denominations and details.
     public interface ICurrencyConfig
     {
-        // Initializes the currency configuration by loading settings from a given file path.
+        // Initializes the currency configuration with a list of pre-configured currencies.
         // Parameters:
-        // - configFilePath: The path to the configuration file containing currency-related data.
-        void Initialize(string configFilePath);
-
-        // Loads a configuration file by its filename and extracts currency details.
-        // Parameters:
-        // - filename: The name of the file containing the currency configuration data.
-        void LoadFromFile(string filename);
+        // - preConfiguredCurrencies: A list of CurrencyData objects used to set up the initial currency configuration.
+        void Initialize(List<CurrencyData> preConfiguredCurrencies);
 
         // Sets the active currency using its unique currency code.
         // Parameters:

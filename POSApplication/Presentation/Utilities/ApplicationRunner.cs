@@ -2,7 +2,6 @@ namespace POSApplication.Presentation
 {
     // Importing required namespaces
     using BusinessLogic; // Encapsulates core business logic.
-    using BusinessLogic.config; // Manages configuration-related operations in the business logic layer.
     using BusinessLogic.Utilities; // Includes general-purpose utilities for the application.
     using BusinessLogic.Utilities.Payments; // Contains payment-related utilities.
     using Data; // Handles data access and manipulation.
@@ -106,11 +105,11 @@ namespace POSApplication.Presentation
         {
             try
             {
-                // Retrieve the currency configuration file path dynamically
-                var currencyFilePath = ConfigLoader.GetCurrencyFilePath();
+                // Load all pre-configured currencies from the configuration file
+                var preConfiguredCurrencies = ConfigLoader.LoadAllCurrenciesFromConfig();
 
-                // Initialize the currency configuration using the file path
-                _currencyConfig.Initialize(currencyFilePath);
+                // Initialize the currency configuration with the pre-configured currency data from the configuration file
+                _currencyConfig.Initialize(preConfiguredCurrencies);
 
 
                 // Refer to the "Manage and Add a New Currency" section in the README file for detailed steps

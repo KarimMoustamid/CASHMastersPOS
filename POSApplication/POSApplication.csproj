@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="CurrencyConfig.json" />
-    <Content Include="CurrencyConfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="CurrencyConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -4,6 +4,7 @@ namespace POSApplication.Tests
     using Data;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Presentation.Utilities.logs;
 
     public class DependencyInjectionTests
     {

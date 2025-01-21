@@ -1,12 +1,12 @@
 // Using directive for logging interface to handle logging within the application.
 using Microsoft.Extensions.Logging;
-// Using directive to access data-related functionalities and models within the application's data layer.
 using POSApplication.Data;
+// Using directive to access data-related functionalities and models within the application's data layer.
 // Using directive for custom logging utilities specific to the presentation layer of the application.
-using POSApplication.Presentation.Utilities.logs;
 
 // Helper class to interact with the user and handle inputs related to currency, payments, and configurations.
 // This class simplifies user interactions and ensures proper logging and validation during operations.
+namespace POSApplication.Presentation.Utilities.logs;
 public class UserInteractionHelper : IUserInteractionHelper
 {
     private readonly ILogger<UserInteractionHelper> _logger; // Logger for logging information, warnings, and errors.
@@ -74,10 +74,10 @@ public class UserInteractionHelper : IUserInteractionHelper
             {
                 // The `Convert.ChangeType` method converts the object into the desired type, it returns the result as an `object`.
                 // The explicit cast `(T)` is required to convert the `object` returned by `ChangeType` into the generic type `T`.
-                var convertedValue = (T) Convert.ChangeType(input, typeof(T));
+                var convertedValue = (T) Convert.ChangeType(input, typeof(T))!;
 
                 // If validation is provided, check the value
-                if (validate == null || validate(convertedValue))
+                if ((validate == null || validate(convertedValue)))
                 {
                     return convertedValue;
                 }

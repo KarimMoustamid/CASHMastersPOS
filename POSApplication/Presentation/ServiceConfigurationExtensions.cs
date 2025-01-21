@@ -4,7 +4,8 @@ namespace POSApplication.Presentation
     using BusinessLogic; // Imports business logic layer for core application functionality.
     using Data; // Imports data-related configurations and models.
     using Microsoft.Extensions.DependencyInjection; // Enables Dependency Injection (DI) configuration.
-    using Microsoft.Extensions.Logging; // Provides logging capabilities to the application.
+    using Microsoft.Extensions.Logging;
+    using Utilities.logs; // Provides logging capabilities to the application.
 
     // A static class containing extension methods to configure services for the application.
     public static class ServiceConfigurationExtensions

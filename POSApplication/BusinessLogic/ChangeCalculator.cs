@@ -12,9 +12,6 @@ namespace POSApplication.BusinessLogic
         private readonly ICurrencyConfig _currencyConfig;
 
 
-        // Helper instance for handling user interactions like input collection and display, to facilitate the change calculation process.
-        private readonly UserInteractionHelper _userInteractionHelper;
-
         // Constructor for dependency injection.
         // Accepts an implementation of ICurrencyConfig to provide currency details such as denominations.
         public ChangeCalculator(ICurrencyConfig currencyConfig)

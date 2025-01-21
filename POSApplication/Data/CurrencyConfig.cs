@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
-using POSApplication.Data;
 using POSApplication.Data.Models;
 
+namespace POSApplication.Data;
 public class CurrencyConfig : ICurrencyConfig
 {
     private readonly ILogger<CurrencyConfig> _logger;
     private List<decimal> _denominations = new();
-    private string _currencyCountry = string.Empty;
+    private string? _currencyCountry = string.Empty;
     private CurrencyData? _currentCurrency;
     private List<CurrencyData> _currencies = new();
 

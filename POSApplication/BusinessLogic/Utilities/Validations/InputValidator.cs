@@ -55,7 +55,7 @@ public static class InputValidator
             var input = Console.ReadLine()?.Trim();
 
             // If the input passes the validation function, return it.
-            if (validation(input)) return input;
+            if (input != null && validation(input)) return input;
 
             // Logs a warning with the provided error message if validation fails.
             _logger.LogWarning(errorMessage);
